@@ -2,9 +2,10 @@ import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import LoginPage from "./login";
 
+
 describe("Login Page", () => {
   it("should render with required fields", () => {
-    render(<LoginPage />);
+    render(<LoginPage/>);
     //getBy -> throws an error
     //findBy - > Async
     // queryBy -> null
