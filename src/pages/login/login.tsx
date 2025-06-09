@@ -38,7 +38,7 @@ const LoginPage = () => {
     enabled: false,
   });
 
-  const { mutate: logoutMutate } = useMutation({
+  const { mutate: logoutMutate} = useMutation({
     mutationKey: ["logout"],
     mutationFn: logout,
     onSuccess: async () => {
