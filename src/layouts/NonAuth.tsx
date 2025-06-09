@@ -3,7 +3,6 @@ import { useAuthStore } from "../store";
 
 const NonAuth = () => {
   const { user } = useAuthStore();
-
   if (user !== null) {
     return <Navigate to="/" replace={true} />;
   }
