@@ -105,7 +105,7 @@ const UserForm = () => {
                     style={{ width: "100%" }}
                     placeholder={"Select role"}
                     allowClear={true}
-                    options={tenants.map((tenant: Tenant) => (
+                    options={tenants?.map((tenant: Tenant) => (
                      {value: tenant.id, label: tenant.name}
                   ))}
                   />

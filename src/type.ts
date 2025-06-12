@@ -1,14 +1,23 @@
 export type Credentials = {
-  email: string,
-  password: string
+  email: string;
+  password: string;
 }
 
 export type User = {
-  id:string,
-  emai:  string,
-  firstName: string,
-  lastName: string,
-  createdAt: string,
+  id:string;
+  emai:  string;
+  firstName: string;
+  lastName: string;
+  createdAt: string;
+}
+
+export type CreateUserData = {
+  emai:  string;
+  firstName: string;
+  lastName: string;
+  password: string;
+  role: string;
+  tenantId: number;
 }
 
 export type Tenant = {
