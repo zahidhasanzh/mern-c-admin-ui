@@ -1,16 +1,27 @@
 import { Button, Card, Col, Input, Row, Select } from "antd";
-import {PlusOutlined} from "@ant-design/icons"
-const UserFilter = () => {
+import { PlusOutlined } from "@ant-design/icons";
+
+type UserFilterProps = {
+  onFilterChange: (filterName: string, filterValue: string) => void;
+};
+const UserFilter = ({ onFilterChange }: UserFilterProps) => {
   return (
     <Card>
       <Row justify={"space-between"}>
         <Col span={16}>
           <Row gutter={20}>
             <Col span={8}>
-              <Input.Search placeholder="Search" />
+              <Input.Search
+                onChange={(e) => onFilterChange("serchFilter", e.target.value)}
+                allowClear={true}
+                placeholder="Search"
+              />
             </Col>
             <Col span={8}>
               <Select
+                onChange={(selectedItem) =>
+                  onFilterChange("roleFilter", selectedItem)
+                }
                 style={{ width: "100%" }}
                 placeholder={"Select role"}
                 allowClear={true}
@@ -23,6 +34,9 @@ const UserFilter = () => {
             </Col>
             <Col span={8}>
               <Select
+                onChange={(selectedItem) =>
+                  onFilterChange("statusFilter", selectedItem)
+                }
                 placeholder={"Status"}
                 style={{ width: "100%" }}
                 allowClear={true}
@@ -35,7 +49,9 @@ const UserFilter = () => {
           </Row>
         </Col>
         <Col span={8} style={{ display: "flex", justifyContent: "end" }}>
-         <Button type="primary" icon={<PlusOutlined/>}>Add User</Button>
+          <Button type="primary" icon={<PlusOutlined />}>
+            Add User
+          </Button>
         </Col>
       </Row>
     </Card>
