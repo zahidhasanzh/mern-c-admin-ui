@@ -1,12 +1,13 @@
 import { PlusOutlined, RightOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
-import { Breadcrumb, Button, Drawer, Space, Table } from "antd";
+import { Breadcrumb, Button, Drawer, Form, Space, Table, theme } from "antd";
 import { Link, Navigate } from "react-router-dom";
 import { getUsers } from "../../http/api";
 import type { User } from "../../type";
 import { useAuthStore } from "../../store";
 import UserFilter from "./UsersFilter";
 import { useState } from "react";
+import UserForm from "./forms/UserForm";
 
 const columns = [
   {
@@ -40,6 +41,9 @@ const columns = [
 ];
 
 const Users = () => {
+  const {
+    token: { colorBgLayout },
+  } = theme.useToken();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const {
     data: users,
@@ -75,7 +79,11 @@ const Users = () => {
             console.log(filterName, filterValue);
           }}
         >
-           <Button type="primary" icon={<PlusOutlined />} onClick={() => setDrawerOpen(true)}>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => setDrawerOpen(true)}
+          >
             Add User
           </Button>
         </UserFilter>
@@ -86,9 +94,10 @@ const Users = () => {
           open={drawerOpen}
           title="Create user"
           width={720}
+          styles={{ body: { background: colorBgLayout } }}
           destroyOnHidden={true}
           onClose={() => {
-            setDrawerOpen(false)
+            setDrawerOpen(false);
           }}
           extra={
             <Space>
@@ -97,7 +106,9 @@ const Users = () => {
             </Space>
           }
         >
-          <p>Some content...</p>
+          <Form layout="vertical">
+            <UserForm />
+          </Form>
         </Drawer>
       </Space>
     </>
