@@ -42,7 +42,6 @@ const columns = [
 
 const Users = () => {
   const [form] = Form.useForm();
-  const queryClient = useQueryClient();
   const {
     token: { colorBgLayout },
   } = theme.useToken();
@@ -61,6 +60,7 @@ const Users = () => {
 
   const { user } = useAuthStore();
 
+  const queryClient = useQueryClient();
   const { mutate: userMutate } = useMutation({
     mutationKey: ["user"],
     mutationFn: async (data: CreateUserData) =>
