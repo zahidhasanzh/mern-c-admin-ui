@@ -86,6 +86,7 @@ const Users = () => {
     perPage: PER_PAGE,
     currentPage: 1,
   });
+
   const [drawerOpen, setDrawerOpen] = useState(false);
   const {
     data: users,
@@ -104,6 +105,7 @@ const Users = () => {
       ).toString();
       return getUsers(queryString).then((res) => res.data);
     },
+    
 
     placeholderData: keepPreviousData,
   });
