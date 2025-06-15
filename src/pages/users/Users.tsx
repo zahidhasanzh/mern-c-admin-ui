@@ -1,6 +1,26 @@
-import { PlusOutlined, RightOutlined } from "@ant-design/icons";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Breadcrumb, Button, Drawer, Form, Space, Table, theme } from "antd";
+import {
+  LoadingOutlined,
+  PlusOutlined,
+  RightOutlined,
+} from "@ant-design/icons";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import {
+  Breadcrumb,
+  Button,
+  Drawer,
+  Flex,
+  Form,
+  Space,
+  Spin,
+  Table,
+  theme,
+  Typography,
+} from "antd";
 import { Link, Navigate } from "react-router-dom";
 import { createUser, getUsers } from "../../http/api";
 import type { CreateUserData, User } from "../../type";
@@ -54,7 +74,7 @@ const Users = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const {
     data: users,
-    isLoading,
+    isFetching,
     isError,
     error,
   } = useQuery({
@@ -65,6 +85,8 @@ const Users = () => {
       ).toString();
       return getUsers(queryString).then((res) => res.data);
     },
+
+    placeholderData: keepPreviousData
   });
 
   const { user } = useAuthStore();
@@ -94,13 +116,22 @@ const Users = () => {
   return (
     <>
       <Space direction="vertical" size={"large"} style={{ width: "100%" }}>
-        <Breadcrumb
-          separator={<RightOutlined />}
-          items={[{ title: <Link to="/">Dashboard</Link> }, { title: "Users" }]}
-        />
+        <Flex justify="space-between">
+          <Breadcrumb
+            separator={<RightOutlined />}
+            items={[
+              { title: <Link to="/">Dashboard</Link> },
+              { title: "Users" },
+            ]}
+          />
 
-        {isLoading && <div>Loading...</div>}
-        {isError && <div>{error.message}</div>}
+          {isFetching && (
+            <Spin
+              indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />}
+            />
+          )}
+          {isError && <Typography.Text type="danger">{error.message}</Typography.Text>}
+        </Flex>
 
         <UserFilter
           onFilterChange={(filterName: string, filterValue: string) => {
