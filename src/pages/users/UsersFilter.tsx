@@ -1,28 +1,22 @@
-import {  Card, Col, Input, Row, Select } from "antd";
-
+import { Card, Col, Form, Input, Row, Select } from "antd";
 
 type UserFilterProps = {
-  children?: React.ReactNode
-  onFilterChange: (filterName: string, filterValue: string) => void;
+  children?: React.ReactNode;
 };
-const UserFilter = ({ onFilterChange, children }: UserFilterProps) => {
+const UserFilter = ({ children }: UserFilterProps) => {
   return (
     <Card>
       <Row justify={"space-between"}>
         <Col span={16}>
           <Row gutter={20}>
             <Col span={8}>
-              <Input.Search
-                onChange={(e) => onFilterChange("serchFilter", e.target.value)}
-                allowClear={true}
-                placeholder="Search"
-              />
+              <Form.Item name="q">
+                <Input.Search allowClear={true} placeholder="Search" />
+              </Form.Item>
             </Col>
             <Col span={8}>
-              <Select
-                onChange={(selectedItem) =>
-                  onFilterChange("roleFilter", selectedItem)
-                }
+              <Form.Item name="role">
+                 <Select
                 style={{ width: "100%" }}
                 placeholder={"Select role"}
                 allowClear={true}
@@ -32,8 +26,9 @@ const UserFilter = ({ onFilterChange, children }: UserFilterProps) => {
                   { value: "customer", label: "Customer" },
                 ]}
               />
+              </Form.Item>
             </Col>
-            <Col span={8}>
+            {/* <Col span={8}>
               <Select
                 onChange={(selectedItem) =>
                   onFilterChange("statusFilter", selectedItem)
@@ -46,11 +41,11 @@ const UserFilter = ({ onFilterChange, children }: UserFilterProps) => {
                   { value: "active", label: "Active" },
                 ]}
               />
-            </Col>
+            </Col> */}
           </Row>
         </Col>
         <Col span={8} style={{ display: "flex", justifyContent: "end" }}>
-         {children}
+          {children}
         </Col>
       </Row>
     </Card>

@@ -23,7 +23,7 @@ import {
 } from "antd";
 import { Link, Navigate } from "react-router-dom";
 import { createUser, getUsers } from "../../http/api";
-import type { CreateUserData, User } from "../../type";
+import type { CreateUserData, FieldData, User } from "../../type";
 import { useAuthStore } from "../../store";
 import UserFilter from "./UsersFilter";
 import { useState } from "react";
@@ -63,6 +63,8 @@ const columns = [
 
 const Users = () => {
   const [form] = Form.useForm();
+  const [filterForm] = Form.useForm();
+
   const {
     token: { colorBgLayout },
   } = theme.useToken();
@@ -80,13 +82,17 @@ const Users = () => {
   } = useQuery({
     queryKey: ["users", queryParams],
     queryFn: () => {
+      const filteredParams = Object.fromEntries(
+        Object.entries(queryParams).filter((item) => !!item[1])
+      );
+
       const queryString = new URLSearchParams(
-        queryParams as unknown as Record<string, string>
+        filteredParams as unknown as Record<string, string>
       ).toString();
       return getUsers(queryString).then((res) => res.data);
     },
 
-    placeholderData: keepPreviousData
+    placeholderData: keepPreviousData,
   });
 
   const { user } = useAuthStore();
@@ -107,6 +113,17 @@ const Users = () => {
     console.log("Form values", form.getFieldsValue());
     await userMutate(form.getFieldsValue());
     setDrawerOpen(false);
+  };
+
+  const onFilterChange = (changedFields: FieldData[]) => {
+    console.log(changedFields);
+    const changeFilterFields = changedFields
+      .map((item) => ({
+        [item.name[0]]: item.value,
+      }))
+      .reduce((acc, item) => ({ ...acc, ...item }), {});
+    setQueryParams((prev) => ({ ...prev, ...changeFilterFields }));
+    console.log(changeFilterFields);
   };
 
   if (user?.role !== "admin") {
@@ -130,22 +147,22 @@ const Users = () => {
               indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />}
             />
           )}
-          {isError && <Typography.Text type="danger">{error.message}</Typography.Text>}
+          {isError && (
+            <Typography.Text type="danger">{error.message}</Typography.Text>
+          )}
         </Flex>
 
-        <UserFilter
-          onFilterChange={(filterName: string, filterValue: string) => {
-            console.log(filterName, filterValue);
-          }}
-        >
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => setDrawerOpen(true)}
-          >
-            Add User
-          </Button>
-        </UserFilter>
+        <Form form={filterForm} onFieldsChange={onFilterChange}>
+          <UserFilter>
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => setDrawerOpen(true)}
+            >
+              Add User
+            </Button>
+          </UserFilter>
+        </Form>
 
         <Table
           columns={columns}
