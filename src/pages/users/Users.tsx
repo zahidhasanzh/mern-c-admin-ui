@@ -29,7 +29,7 @@ import UserFilter from "./UsersFilter";
 import { useMemo, useState } from "react";
 import UserForm from "./forms/UserForm";
 import { PER_PAGE } from "../../constants";
-import {debounce} from "lodash"
+import { debounce } from "lodash";
 
 const columns = [
   {
@@ -65,11 +65,7 @@ const columns = [
     dataIndex: "tenant",
     key: "tenant",
     render: (_text: string, record: User) => {
-      return (
-        <div>
-          {record.tenant?.name}
-        </div>
-      );
+      return <div>{record.tenant?.name}</div>;
     },
   },
 ];
@@ -105,7 +101,6 @@ const Users = () => {
       ).toString();
       return getUsers(queryString).then((res) => res.data);
     },
-    
 
     placeholderData: keepPreviousData,
   });
@@ -131,10 +126,10 @@ const Users = () => {
   };
 
   const debouncedQUpdate = useMemo(() => {
-     return debounce((value: string | undefined) => {
-      setQueryParams((prev) => ({...prev, q: value, currentPage: 1}))
-     }, 500)
-  }, [])
+    return debounce((value: string | undefined) => {
+      setQueryParams((prev) => ({ ...prev, q: value, currentPage: 1 }));
+    }, 500);
+  }, []);
 
   const onFilterChange = (changedFields: FieldData[]) => {
     console.log(changedFields);
@@ -145,9 +140,13 @@ const Users = () => {
       .reduce((acc, item) => ({ ...acc, ...item }), {});
 
     if ("q" in changeFilterFields) {
-      debouncedQUpdate(changeFilterFields.q)
+      debouncedQUpdate(changeFilterFields.q);
     } else {
-      setQueryParams((prev) => ({ ...prev, ...changeFilterFields, currentPage: 1 }));
+      setQueryParams((prev) => ({
+        ...prev,
+        ...changeFilterFields,
+        currentPage: 1,
+      }));
     }
   };
 
@@ -203,6 +202,9 @@ const Users = () => {
                   currentPage: page,
                 };
               });
+            },
+            showTotal: (total: number, range: number[]) => {
+              return `Showing ${range[0]}-${range[1]} of ${total} items`;
             },
           }}
         />
