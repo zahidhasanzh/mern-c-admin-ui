@@ -132,6 +132,7 @@ const Users = () => {
       return;
     },
   });
+  
 
   const { mutate: updateUserMutation } = useMutation({
     mutationKey: ["user"],
@@ -184,6 +185,8 @@ const Users = () => {
   if (user?.role !== "admin") {
     return <Navigate to="/" replace={true}></Navigate>;
   }
+
+  console.log(currentEditingUser);
 
   return (
     <>
