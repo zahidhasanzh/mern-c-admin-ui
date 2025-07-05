@@ -19,12 +19,12 @@ const ProductsFilter = ({ children }: ProductsFilterProps) => {
         <Col span={16}>
           <Row gutter={20}>
             <Col span={6}>
-              <Form.Item name="q">
+              <Form.Item name="q" style={{marginBottom: 0}}>
                 <Input.Search allowClear={true} placeholder="Search" />
               </Form.Item>
             </Col>
             <Col span={6}>
-              <Form.Item name="role">
+              <Form.Item name="role" style={{marginBottom: 0}}>
                 <Select
                   style={{ width: "100%" }}
                   placeholder={"Select category"}
@@ -38,7 +38,7 @@ const ProductsFilter = ({ children }: ProductsFilterProps) => {
             </Col>
 
             <Col span={6}>
-              <Form.Item name="role">
+              <Form.Item name="role" style={{marginBottom: 0}}>
                 <Select
                   style={{ width: "100%" }}
                   placeholder={"Select restaurant"}

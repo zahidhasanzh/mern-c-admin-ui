@@ -10,7 +10,7 @@ const TenantFilter = ({ children }: TenantsFilterProps) => {
                 <Col span={16}>
                     <Row gutter={20}>
                         <Col span={12}>
-                            <Form.Item name="q">
+                            <Form.Item name="q" style={{marginBottom: 0}}>
                                 <Input.Search allowClear={true} placeholder="Search" />
                             </Form.Item>
                         </Col>
