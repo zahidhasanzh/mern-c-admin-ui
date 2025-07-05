@@ -1,6 +1,7 @@
 import {
   Breadcrumb,
   Button,
+  Drawer,
   Flex,
   Form,
   Image,
@@ -8,11 +9,16 @@ import {
   Spin,
   Table,
   Tag,
+  theme,
   Typography,
 } from "antd";
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
-import { LoadingOutlined, PlusOutlined, RightOutlined } from "@ant-design/icons";
+import {
+  LoadingOutlined,
+  PlusOutlined,
+  RightOutlined,
+} from "@ant-design/icons";
 import ProductsFilter from "./ProductFilter";
 import type { FieldData, Product } from "../../type";
 import { useMemo, useState } from "react";
@@ -21,6 +27,7 @@ import { getProducts } from "../../http/api";
 import { debounce } from "lodash";
 import { PER_PAGE } from "../../constants";
 import { useAuthStore } from "../../store";
+import ProductForm from "./forms/ProductForm";
 
 const columns = [
   {
@@ -76,16 +83,26 @@ const columns = [
 
 const Products = () => {
   const [filterForm] = Form.useForm();
-  const {user} = useAuthStore()
+    const [form] = Form.useForm();
+  const { user } = useAuthStore();
 
   const [queryParams, setQueryParams] = useState({
     limit: PER_PAGE,
     page: 1,
-    tenantId: user!.role === 'manager' ? user?.tenant?.id : undefined
+    tenantId: user!.role === "manager" ? user?.tenant?.id : undefined,
   });
+  const {
+    token: { colorBgLayout },
+  } = theme.useToken();
 
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const { data: products, isFetching, isError, error } = useQuery({
+  const {
+    data: products,
+    isFetching,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ["products", queryParams],
     queryFn: () => {
       const filteredParams = Object.fromEntries(
@@ -124,6 +141,10 @@ const Products = () => {
     }
   };
 
+  const onHandleSubmit = () => {
+    console.log("submiting....");
+  }
+
   return (
     <>
       <Space direction="vertical" size={"large"} style={{ width: "100%" }}>
@@ -135,7 +156,7 @@ const Products = () => {
               { title: "Products" },
             ]}
           />
-            {isFetching && (
+          {isFetching && (
             <Spin
               indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />}
             />
@@ -147,7 +168,7 @@ const Products = () => {
 
         <Form form={filterForm} onFieldsChange={onFilterChange}>
           <ProductsFilter>
-            <Button type="primary" icon={<PlusOutlined />} onClick={() => {}}>
+            <Button type="primary" icon={<PlusOutlined />} onClick={() => {setDrawerOpen(true)}}>
               Add Product
             </Button>
           </ProductsFilter>
@@ -178,7 +199,7 @@ const Products = () => {
                 return {
                   ...prev,
                   page: page,
-                }; 
+                };
               });
             },
             showTotal: (total: number, range: number[]) => {
@@ -186,6 +207,37 @@ const Products = () => {
             },
           }}
         />
+
+        <Drawer
+          open={drawerOpen}
+          title={"Add Prodcut"}
+          width={720}
+          styles={{ body: { background: colorBgLayout } }}
+          destroyOnHidden={true}
+          onClose={() => {
+            setDrawerOpen(false);
+            form.resetFields();
+          }}
+          extra={
+            <Space>
+              <Button
+                onClick={() => {
+                  setDrawerOpen(false);
+                  form.resetFields();
+                }}
+              >
+                Cancel
+              </Button>
+              <Button onClick={onHandleSubmit} type="primary">
+                Submit
+              </Button>
+            </Space>
+          }
+        >
+          <Form layout="vertical" form={form}>
+            <ProductForm />
+          </Form>
+        </Drawer>
       </Space>
     </>
   );
