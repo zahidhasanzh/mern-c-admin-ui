@@ -20,6 +20,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { getProducts } from "../../http/api";
 import { debounce } from "lodash";
 import { PER_PAGE } from "../../constants";
+import { useAuthStore } from "../../store";
 
 const columns = [
   {
@@ -75,11 +76,14 @@ const columns = [
 
 const Products = () => {
   const [filterForm] = Form.useForm();
+  const {user} = useAuthStore()
 
   const [queryParams, setQueryParams] = useState({
     limit: PER_PAGE,
     page: 1,
+    tenantId: user!.role === 'manager' ? user?.tenant?.id : undefined
   });
+
 
   const { data: products, isFetching, isError, error } = useQuery({
     queryKey: ["products", queryParams],
