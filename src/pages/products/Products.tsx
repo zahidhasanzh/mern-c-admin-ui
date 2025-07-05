@@ -9,15 +9,16 @@ import {
   Tag,
   Typography,
 } from "antd";
-import {format} from 'date-fns'
+import { format } from "date-fns";
 import { Link } from "react-router-dom";
 import { PlusOutlined, RightOutlined } from "@ant-design/icons";
 import ProductsFilter from "./ProductFilter";
-import type { Product } from "../../type";
-import { useState } from "react";
-import { PER_PAGE } from "../../constants";
+import type { FieldData, Product } from "../../type";
+import { useMemo, useState } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { getProducts } from "../../http/api";
+import { debounce } from "lodash";
+import { PER_PAGE } from "../../constants";
 
 const columns = [
   {
@@ -75,8 +76,8 @@ const Products = () => {
   const [filterForm] = Form.useForm();
 
   const [queryParams, setQueryParams] = useState({
-    perPage: PER_PAGE,
-    currentPage: 1,
+    limit: PER_PAGE,
+    page: 1,
   });
 
   const { data: products } = useQuery({
@@ -94,6 +95,30 @@ const Products = () => {
     placeholderData: keepPreviousData,
   });
 
+  const debouncedQUpdate = useMemo(() => {
+    return debounce((value: string | undefined) => {
+      setQueryParams((prev) => ({ ...prev, q: value, currentPage: 1 }));
+    }, 500);
+  }, []);
+
+  const onFilterChange = (changedFields: FieldData[]) => {
+    const changeFilterFields = changedFields
+      .map((item) => ({
+        [item.name[0]]: item.value,
+      }))
+      .reduce((acc, item) => ({ ...acc, ...item }), {});
+
+    if ("q" in changeFilterFields) {
+      debouncedQUpdate(changeFilterFields.q);
+    } else {
+      setQueryParams((prev) => ({
+        ...prev,
+        ...changeFilterFields,
+        page: 1,
+      }));
+    }
+  };
+
   return (
     <>
       <Space direction="vertical" size={"large"} style={{ width: "100%" }}>
@@ -107,7 +132,7 @@ const Products = () => {
           />
         </Flex>
 
-        <Form form={filterForm} onFieldsChange={() => {}}>
+        <Form form={filterForm} onFieldsChange={onFilterChange}>
           <ProductsFilter>
             <Button type="primary" icon={<PlusOutlined />} onClick={() => {}}>
               Add Product
@@ -133,14 +158,14 @@ const Products = () => {
           rowKey={"id"}
           pagination={{
             total: products?.total,
-            pageSize: queryParams.perPage,
-            current: queryParams.currentPage,
+            pageSize: queryParams.limit,
+            current: queryParams.page,
             onChange: (page) => {
               setQueryParams((prev) => {
                 return {
                   ...prev,
-                  currentPage: page,
-                };
+                  page: page,
+                }; 
               });
             },
             showTotal: (total: number, range: number[]) => {
