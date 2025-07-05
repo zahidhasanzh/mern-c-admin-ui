@@ -186,7 +186,7 @@ const Users = () => {
     return <Navigate to="/" replace={true}></Navigate>;
   }
 
-  console.log(currentEditingUser);
+
 
   return (
     <>
