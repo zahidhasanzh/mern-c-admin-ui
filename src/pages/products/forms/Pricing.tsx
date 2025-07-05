@@ -1,4 +1,4 @@
-import { Card, Col, Form, Input, InputNumber, Row, Space, Typography } from "antd";
+import { Card, Col, Form, InputNumber, Row, Space, Typography } from "antd";
 
 import type { Category } from "../../../type";
 type PricingProps = {
