@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import {
   Card,
   Col,
@@ -9,44 +10,60 @@ import {
   Switch,
   Typography,
 } from "antd";
+import { getCategories, getTenants } from "../../http/api";
+import type { Category, Tenant } from "../../type";
 type ProductsFilterProps = {
   children?: React.ReactNode;
 };
 const ProductsFilter = ({ children }: ProductsFilterProps) => {
+  const { data: restaurants } = useQuery({
+    queryKey: ["restaurants"],
+    queryFn: () => {
+      return getTenants(`perPage=100&currentPage=1`);
+    },
+  });
+
+  const { data: categories } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => {
+      return getCategories();
+    },
+  });
+
   return (
     <Card>
       <Row justify={"space-between"}>
         <Col span={16}>
           <Row gutter={20}>
             <Col span={6}>
-              <Form.Item name="q" style={{marginBottom: 0}}>
+              <Form.Item name="q" style={{ marginBottom: 0 }}>
                 <Input.Search allowClear={true} placeholder="Search" />
               </Form.Item>
             </Col>
             <Col span={6}>
-              <Form.Item name="role" style={{marginBottom: 0}}>
+              <Form.Item name="category" style={{ marginBottom: 0 }}>
                 <Select
                   style={{ width: "100%" }}
-                  placeholder={"Select category"}
+                  placeholder="Select category"
                   allowClear={true}
-                  options={[
-                    { value: "pizza", label: "Pizza" },
-                    { value: "beverages", label: "Beverages" },
-                  ]}
+                  options={categories?.data.map((category: Category) => ({
+                    value: category._id,
+                    label: category.name,
+                  }))}
                 />
               </Form.Item>
             </Col>
 
             <Col span={6}>
-              <Form.Item name="role" style={{marginBottom: 0}}>
+              <Form.Item name="restaurant" style={{ marginBottom: 0 }}>
                 <Select
                   style={{ width: "100%" }}
                   placeholder={"Select restaurant"}
                   allowClear={true}
-                  options={[
-                    { value: "pizza", label: "Pizza hub" },
-                    { value: "beverages", label: "Softy corner" },
-                  ]}
+                  options={restaurants?.data.data.map((restaurant: Tenant) => ({
+                    value: restaurant.id,
+                    label: restaurant.name,
+                  }))}
                 />
               </Form.Item>
             </Col>
@@ -59,7 +76,7 @@ const ProductsFilter = ({ children }: ProductsFilterProps) => {
             </Col>
           </Row>
         </Col>
-        <Col span={8} style={{ display: "flex", justifyContent: "end"}}>
+        <Col span={8} style={{ display: "flex", justifyContent: "end" }}>
           {children}
         </Col>
       </Row>
