@@ -3,28 +3,25 @@ import {
   Col,
   Form,
   Input,
-  message,
   Row,
   Select,
   Space,
   Switch,
   Typography,
-  Upload,
-  type UploadProps,
 } from "antd";
 import type { Category, Tenant } from "../../../type";
 import { useQuery } from "@tanstack/react-query";
 import { getCategories, getTenants } from "../../../http/api";
-import { PlusOutlined } from "@ant-design/icons";
+
 import Pricing from "./Pricing";
 import Attributes from "./Attributes";
-import { useState } from "react";
+import ProductImage from "./ProductImage";
+
 
 const ProductForm = () => {
   const selectedCategory = Form.useWatch("categoryId");
 
-  const [messageApi, contextHolder] = message.useMessage();
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
+
 
   const { data: categories } = useQuery({
     queryKey: ["categories"],
@@ -40,24 +37,6 @@ const ProductForm = () => {
     },
   });
 
-  const uploaderConfig: UploadProps = {
-    name: "file",
-    multiple: false,
-    showUploadList: false,
-    beforeUpload: (file) => {
-      //validation logic
-      const isJpgOrPng =
-        file.type === "image/jpeg" || file.type === "image/png";
-      if (!isJpgOrPng) {
-        console.error("you can upload JPG/PNG file!");
-        messageApi.error("you can only upload JPG/PNG file!");
-      }
-
-      //size validation
-      setImageUrl(URL.createObjectURL(file));
-      return false;
-    },
-  };
 
   return (
     <Row>
@@ -128,32 +107,7 @@ const ProductForm = () => {
           <Card title="Product image">
             <Row gutter={20}>
               <Col span={12}>
-                <Form.Item
-                  label=""
-                  name="image"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please upload a product image",
-                    },
-                  ]}
-                >
-                  {contextHolder}
-                  <Upload listType="picture-card" {...uploaderConfig}>
-                    {imageUrl ? (
-                      <img
-                        src={imageUrl}
-                        alt="avatar"
-                        style={{ width: "100%" }}
-                      />
-                    ) : (
-                      <Space direction="vertical">
-                        <PlusOutlined />
-                        <Typography.Text>Upload</Typography.Text>
-                      </Space>
-                    )}
-                  </Upload>
-                </Form.Item>
+                <ProductImage/>
               </Col>
             </Row>
           </Card>
