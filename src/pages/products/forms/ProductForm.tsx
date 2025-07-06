@@ -19,6 +19,7 @@ import Attributes from "./Attributes";
 
 const ProductForm = () => {
   const selectedCategory = Form.useWatch('categoryId');
+ 
 
 
   const { data: categories } = useQuery({
@@ -162,7 +163,7 @@ const ProductForm = () => {
           }
           {
             selectedCategory && (
-              <Attributes/>
+              <Attributes selectedCategory= {selectedCategory}/>
 
             )
           }
