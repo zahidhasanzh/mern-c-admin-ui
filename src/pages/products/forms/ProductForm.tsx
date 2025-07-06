@@ -8,6 +8,7 @@ import {
   Space,
   Switch,
   Typography,
+  type FormInstance,
 } from "antd";
 import type { Category, Tenant } from "../../../type";
 import { useQuery } from "@tanstack/react-query";
@@ -18,7 +19,7 @@ import Attributes from "./Attributes";
 import ProductImage from "./ProductImage";
 import { useAuthStore } from "../../../store";
 
-const ProductForm = () => {
+const ProductForm = ({form}: {form: FormInstance}) => {
   const selectedCategory = Form.useWatch("categoryId");
 
   const { user } = useAuthStore();
@@ -75,7 +76,7 @@ const ProductForm = () => {
                     placeholder={"Select Category"}
                     allowClear={true}
                     options={categories?.data?.map((category: Category) => ({
-                      value: JSON.stringify(category),
+                      value: category._id,
                       label: category.name,
                     }))}
                   />
@@ -106,7 +107,7 @@ const ProductForm = () => {
           <Card title="Product image">
             <Row gutter={20}>
               <Col span={12}>
-                <ProductImage />
+                <ProductImage initialImage={form.getFieldValue('image')}/>
               </Col>
             </Row>
           </Card>
@@ -133,7 +134,7 @@ const ProductForm = () => {
                       allowClear={true}
                       options={restaurants?.data.data?.map(
                         (tenant: Tenant) => ({
-                          value: tenant.id,
+                          value: String(tenant.id),
                           label: tenant.name,
                         })
                       )}
