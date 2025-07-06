@@ -15,18 +15,18 @@ const Pricing = ({ selectedCategory }: PricingProps) => {
   return (
     <Card title={<Typography.Text>Product price</Typography.Text>}>
       {Object.entries(category?.priceConfiguration).map(
-        ([configrationKey, configrationValue]) => {
+        ([configurationKey, configurationValue]) => {
           return (
-            <div key={configrationKey}>
+            <div key={configurationKey}>
               <Space
                 direction="vertical"
                 size="large"
                 style={{ width: "100%" }}
               >
-                <Typography.Text>{`${configrationKey} (${configrationValue.priceType})`}</Typography.Text>
+                <Typography.Text>{`${configurationKey} (${configurationValue.priceType})`}</Typography.Text>
 
                 <Row gutter={20}>
-                  {configrationValue.availableOptions.map((opiton: string) => {
+                  {configurationValue.availableOptions.map((opiton: string) => {
                     return (
                       <Col span={8} key={opiton}>
                         <Form.Item
@@ -34,8 +34,8 @@ const Pricing = ({ selectedCategory }: PricingProps) => {
                           name={[
                             "priceConfiguration",
                             JSON.stringify({
-                              configrationKey: configrationKey,
-                              priceType: configrationValue.priceType,
+                              configurationKey: configurationKey,
+                              priceType: configurationValue.priceType,
                              }),
                              opiton
                           ]}

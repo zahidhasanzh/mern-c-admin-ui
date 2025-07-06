@@ -1,12 +1,4 @@
-import {
-  Card,
-  Col,
-  Form,
-  Radio,
-  Row,
-  Switch,
-  Typography,
-} from "antd";
+import { Card, Col, Form, Radio, Row, Switch, Typography } from "antd";
 import type { Category } from "../../../type";
 
 type PricingProps = {
@@ -21,6 +13,7 @@ const Attributes = ({ selectedCategory }: PricingProps) => {
   if (!category) {
     return null;
   }
+
 
 
   return (
@@ -53,9 +46,17 @@ const Attributes = ({ selectedCategory }: PricingProps) => {
             ) : attribute.widgetType === "switch" ? (
               <Row>
                 <Col>
-                    <Form.Item name={['attributes', attribute.name]} valuePropName="checked" initialValue={attribute.defaultValue} label={attribute.name}>
-                        <Switch checkedChildren="yes" unCheckedChildren="no"/>
-                    </Form.Item>
+                  <Form.Item
+                    name={["attributes", attribute.name]}
+                    valuePropName="checked"
+                    label={attribute.name}
+                    initialValue={attribute.defaultValue}
+                  >
+                    <Switch
+                      checkedChildren="Yes"
+                      unCheckedChildren="No"
+                    />
+                  </Form.Item>
                 </Col>
               </Row>
             ) : null}

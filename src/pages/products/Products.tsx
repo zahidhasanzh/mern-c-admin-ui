@@ -22,12 +22,18 @@ import {
 import ProductsFilter from "./ProductFilter";
 import type { FieldData, Product } from "../../type";
 import { useMemo, useState } from "react";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { getProducts } from "../../http/api";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { createProduct, getProducts } from "../../http/api";
 import { debounce } from "lodash";
 import { PER_PAGE } from "../../constants";
 import { useAuthStore } from "../../store";
 import ProductForm from "./forms/ProductForm";
+import { makeFormData } from "./helpers";
 
 const columns = [
   {
@@ -83,7 +89,7 @@ const columns = [
 
 const Products = () => {
   const [filterForm] = Form.useForm();
-    const [form] = Form.useForm();
+  const [form] = Form.useForm();
   const { user } = useAuthStore();
 
   const [queryParams, setQueryParams] = useState({
@@ -140,10 +146,94 @@ const Products = () => {
       }));
     }
   };
+  const queryClient = useQueryClient();
+  const { mutate: productMutate } = useMutation({
+    mutationKey: ["product"],
+    mutationFn: async (data: FormData) =>
+      createProduct(data).then((res) => res.data),
+    onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      form.resetFields()
+      setDrawerOpen(false)
+      return;
+    },
+  });
 
-  const onHandleSubmit = () => {
-    console.log("submiting....");
-  }
+  const onHandleSubmit = async () => {
+    await form.validateFields();
+
+    // const dummy = {
+    //   Size: {
+    //     priceType: "base",
+    //     availableOptions: { Small: 400, Medium: 600, Large: 800 },
+    //   },
+    //   Crust: {
+    //     priceType: "additional",
+    //     availableOptions: { Thin: 50, Thick: 100 },
+    //   },
+    // };
+
+    // const currntData = {
+    //   Size: {
+    //     priceType: "base",
+    //     availableOptions: { Small: 400, Medium: 600, Large: 800 },
+    //   },
+    //   Crust: {
+    //     priceType: "additional",
+    //     availableOptions: { Thin: 50, Thick: 100 },
+    //   },
+    // };
+
+    const priceConfiguration = form.getFieldValue("priceConfiguration");
+    const pricing = Object.entries(priceConfiguration).reduce(
+      (acc, [key, value]) => {
+        const parsedKey = JSON.parse(key);
+        return {
+          ...acc,
+          [parsedKey.configurationKey]: {
+            priceType: parsedKey.priceType,
+            availableOptions: value,
+          },
+        };
+      },
+      {}
+    );
+
+    const categoryId = JSON.parse(form.getFieldValue("categoryId"))._id;
+
+    // const currentAttrs = {
+    //   isHit: "No",
+    //   Spiciness: "Less",
+    // };
+
+    // const attrs = [
+    //   { name: "Is Hit", value: true },
+    //   { name: "Spiciness", value: "Hot" },
+    // ];
+
+    const attributes = Object.entries(form.getFieldValue("attributes")).map(
+      ([key, value]) => {
+        return {
+          name: key,
+          value: value,
+        };
+      }
+    );
+
+
+    const postData = {
+      ...form.getFieldsValue(),
+      isPublish: form.getFieldValue('isPublish') ? true : false,
+      image: form.getFieldValue('image'),
+      categoryId,
+      priceConfiguration: pricing,
+      attributes,
+    };
+
+    const formData = makeFormData(postData);
+    await productMutate(formData)
+
+  };
 
   return (
     <>
@@ -168,7 +258,13 @@ const Products = () => {
 
         <Form form={filterForm} onFieldsChange={onFilterChange}>
           <ProductsFilter>
-            <Button type="primary" icon={<PlusOutlined />} onClick={() => {setDrawerOpen(true)}}>
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => {
+                setDrawerOpen(true);
+              }}
+            >
               Add Product
             </Button>
           </ProductsFilter>

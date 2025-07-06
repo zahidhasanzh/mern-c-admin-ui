@@ -53,10 +53,6 @@ export interface Category {
 }
 
 
-
-
-
-
 export type FieldData = {
   name: string[];
   value?: string;
@@ -72,3 +68,5 @@ export type Product = {
   createdAt: string;
 }
 
+export type ImageField = {file: File}
+export type CreateProductData = Product & {image: ImageField}

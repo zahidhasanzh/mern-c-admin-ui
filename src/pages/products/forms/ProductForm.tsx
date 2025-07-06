@@ -3,12 +3,14 @@ import {
   Col,
   Form,
   Input,
+  message,
   Row,
   Select,
   Space,
   Switch,
   Typography,
   Upload,
+  type UploadProps,
 } from "antd";
 import type { Category, Tenant } from "../../../type";
 import { useQuery } from "@tanstack/react-query";
@@ -16,11 +18,13 @@ import { getCategories, getTenants } from "../../../http/api";
 import { PlusOutlined } from "@ant-design/icons";
 import Pricing from "./Pricing";
 import Attributes from "./Attributes";
+import { useState } from "react";
 
 const ProductForm = () => {
-  const selectedCategory = Form.useWatch('categoryId');
- 
+  const selectedCategory = Form.useWatch("categoryId");
 
+  const [messageApi, contextHolder] = message.useMessage();
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   const { data: categories } = useQuery({
     queryKey: ["categories"],
@@ -35,6 +39,25 @@ const ProductForm = () => {
       return getTenants(`perPage=100&currentPage=1`);
     },
   });
+
+  const uploaderConfig: UploadProps = {
+    name: "file",
+    multiple: false,
+    showUploadList: false,
+    beforeUpload: (file) => {
+      //validation logic
+      const isJpgOrPng =
+        file.type === "image/jpeg" || file.type === "image/png";
+      if (!isJpgOrPng) {
+        console.error("you can upload JPG/PNG file!");
+        messageApi.error("you can only upload JPG/PNG file!");
+      }
+
+      //size validation
+      setImageUrl(URL.createObjectURL(file));
+      return false;
+    },
+  };
 
   return (
     <Row>
@@ -115,11 +138,20 @@ const ProductForm = () => {
                     },
                   ]}
                 >
-                  <Upload listType="picture-card">
-                    <Space direction="vertical">
-                      <PlusOutlined />
-                      <Typography.Text>Upload</Typography.Text>
-                    </Space>
+                  {contextHolder}
+                  <Upload listType="picture-card" {...uploaderConfig}>
+                    {imageUrl ? (
+                      <img
+                        src={imageUrl}
+                        alt="avatar"
+                        style={{ width: "100%" }}
+                      />
+                    ) : (
+                      <Space direction="vertical">
+                        <PlusOutlined />
+                        <Typography.Text>Upload</Typography.Text>
+                      </Space>
+                    )}
                   </Upload>
                 </Form.Item>
               </Col>
@@ -155,30 +187,27 @@ const ProductForm = () => {
             </Row>
           </Card>
 
-          {
-            selectedCategory && (
-              <Pricing selectedCategory={selectedCategory}/>
-              
-            )
-          }
-          {
-            selectedCategory && (
-              <Attributes selectedCategory= {selectedCategory}/>
-
-            )
-          }
+          {selectedCategory && <Pricing selectedCategory={selectedCategory} />}
+          {selectedCategory && (
+            <Attributes selectedCategory={selectedCategory} />
+          )}
 
           <Card title="Other properties">
             <Row gutter={24}>
               <Col span={24}>
                 <Space>
                   <Form.Item name="isPublish">
-                    <Switch defaultChecked={false} onChange={() => {}} checkedChildren="yes" unCheckedChildren="no"/>
+                    <Switch
+                      defaultChecked={false}
+                      onChange={() => {}}
+                      checkedChildren="yes"
+                      unCheckedChildren="no"
+                    />
                   </Form.Item>
                   <Typography.Text
                     style={{ marginBottom: 22, display: "block" }}
                   >
-                   Published
+                    Published
                   </Typography.Text>
                 </Space>
               </Col>
