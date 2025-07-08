@@ -107,7 +107,7 @@ const ProductForm = ({form}: {form: FormInstance}) => {
           <Card title="Product image">
             <Row gutter={20}>
               <Col span={12}>
-                <ProductImage initialImage={form.getFieldValue('image')}/>
+                <ProductImage initialImage={form.getFieldValue("image")} />
               </Col>
             </Row>
           </Card>
@@ -150,6 +150,7 @@ const ProductForm = ({form}: {form: FormInstance}) => {
             <Attributes selectedCategory={selectedCategory} />
           )}
 
+
           <Card title="Other properties">
             <Row gutter={24}>
               <Col span={24}>
@@ -158,8 +159,8 @@ const ProductForm = ({form}: {form: FormInstance}) => {
                     <Switch
                       defaultChecked={false}
                       onChange={() => {}}
-                      checkedChildren="yes"
-                      unCheckedChildren="no"
+                      checkedChildren="Yes"
+                      unCheckedChildren="No"
                     />
                   </Form.Item>
                   <Typography.Text
