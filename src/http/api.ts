@@ -1,8 +1,14 @@
-import type { CreateTenantData, CreateUserData, Credentials } from "../type";
+import type {
+  CreateTenantData,
+  CreateUserData,
+  Credentials,
+  PromoPayload,
+} from "../type";
 import { api } from "./client";
 
 export const AUTH_SERVICE = "/api/auth";
 const CATALOG_SERVICE = "/api/catalog";
+const POROMOS_SERVICE_PREFIX = "/api/order";
 
 //Auth service
 export const login = (credentials: Credentials) =>
@@ -37,3 +43,15 @@ export const updateProduct = (product: FormData, id: string) => {
     headers: { "Content-Type": "multipart/form-data" },
   });
 };
+
+// Promos Service
+export const getPromos = (queryParam: string) => api.get(`${POROMOS_SERVICE_PREFIX}/coupons?${queryParam}`);
+
+export const createPromo = (data: PromoPayload) =>
+  api.post(`${POROMOS_SERVICE_PREFIX}/coupons`, data);
+
+export const updatePromo = (id: string, data: PromoPayload) =>
+  api.put(`${POROMOS_SERVICE_PREFIX}/coupons/${id}`, data);
+
+export const deletePromo = (id: string) =>
+  api.delete(`${POROMOS_SERVICE_PREFIX}/coupons/${id}`);

@@ -134,6 +134,7 @@ const Products = () => {
     page: 1,
     tenantId: user!.role === "manager" ? user?.tenant?.id : undefined,
   });
+
   const {
     token: { colorBgLayout },
   } = theme.useToken();
@@ -183,6 +184,7 @@ const Products = () => {
       }));
     }
   };
+  
   const queryClient = useQueryClient();
   const { mutate: productMutate, isPending } = useMutation({
     mutationKey: ["product"],

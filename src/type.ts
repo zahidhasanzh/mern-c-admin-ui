@@ -75,3 +75,30 @@ export type Product = {
 
 export type ImageField = {file: File}
 export type CreateProductData = Product & {image: ImageField}
+
+
+export interface Promo {
+  _id: string;
+  title: string;
+  code: string;
+  validUpto: string;   
+  tenantId: number;  
+  discount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PromoPayload {
+  title: string;
+  code: string;
+  validUpto: string;
+  tenantId: number;
+  discount: number;
+}
+
+export interface PromoListResponse {
+  data: Promo[];
+  total: number;
+}
+
+
