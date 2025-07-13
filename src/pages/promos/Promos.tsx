@@ -10,6 +10,8 @@ import {
   Typography,
 } from "antd";
 import { Link } from "react-router-dom";
+import dayjs from "dayjs";
+
 import {
   PlusOutlined,
   LoadingOutlined,
@@ -137,7 +139,7 @@ const Promos = () => {
     if (selectedPromo) {
       form.setFieldsValue({
         ...selectedPromo,
-        validUpto: selectedPromo.validUpto && new Date(selectedPromo.validUpto),
+        validUpto: selectedPromo.validUpto && dayjs(selectedPromo.validUpto),
       });
       setDrawerOpen(true);
     }
@@ -210,7 +212,7 @@ const Promos = () => {
           {
             title: "Action",
             key: "action",
-            render: (_: any, record: Promo) => (
+            render: (_, record: Promo) => (
               <Space>
                 <Button type="link" onClick={() => handleEdit(record)}>
                   Edit
@@ -266,7 +268,7 @@ const Promos = () => {
         }
       >
         <Form layout="vertical" form={form}>
-          <PromoForm form={form} />
+          <PromoForm />
         </Form>
       </Drawer>
     </Space>

@@ -144,7 +144,7 @@ const Dashboard = () => {
                   }}
                   placement="bottomRight"
                 >
-                  <Avatar style={{ background: "#fde3cf", color: "#f56a00" }}>
+                  <Avatar style={{ background: "#fde3cf", color: "#f56a00" }} className="cursor-pointer">
                     U
                   </Avatar>
                 </Dropdown>

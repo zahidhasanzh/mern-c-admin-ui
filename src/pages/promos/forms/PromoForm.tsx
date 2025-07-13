@@ -8,7 +8,6 @@ import {
   Space,
   DatePicker,
   InputNumber,
-  type FormInstance,
 } from "antd";
 import type { Tenant } from "../../../type";
 import { useQuery } from "@tanstack/react-query";
@@ -16,12 +15,14 @@ import { getTenants } from "../../../http/api";
 import { useAuthStore } from "../../../store";
 import dayjs from "dayjs";
 
-const PromoForm = ({ form }: { form: FormInstance }) => {
+const PromoForm = () => {
   const { user } = useAuthStore();
 
-  const { data: tenants } = useQuery({
-    queryKey: ["tenants"],
-    queryFn: () => getTenants("perPage=100&currentPage=1"),
+  const { data: restaurants } = useQuery({
+    queryKey: ["restaurants"],
+    queryFn: () => {
+      return getTenants(`perPage=100&currentPage=1`);
+    },
   });
 
   return (
@@ -120,14 +121,18 @@ const PromoForm = ({ form }: { form: FormInstance }) => {
                       },
                     ]}
                   >
-                    <Select
+                     <Select
                       size="large"
-                      placeholder="Select Tenant"
-                      options={tenants?.data?.data?.map((tenant: Tenant) => ({
-                        label: tenant.name,
-                        value: String(tenant.id),
-                      }))}
-                      allowClear
+                      onChange={() => {}}
+                      style={{ width: "100%" }}
+                      placeholder={"Select Restaurant"}
+                      allowClear={true}
+                      options={restaurants?.data.data?.map(
+                        (tenant: Tenant) => ({
+                          value: String(tenant.id),
+                          label: tenant.name,
+                        })
+                      )}
                     />
                   </Form.Item>
                 </Col>
