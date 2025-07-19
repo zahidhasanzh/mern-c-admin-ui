@@ -32,8 +32,13 @@ const getMenuItems = (role: string) => {
     },
     {
       key: "/products",
-      icon: <Icon component={BasketIcon} />,
+      icon: <Icon component={foodIcon} />,
       label: <NavLink to="/products">Products</NavLink>,
+    },
+    {
+      key: "/orders",
+      icon: <Icon component={BasketIcon} />,
+      label: <NavLink to="/orders">Orders</NavLink>,
     },
     {
       key: "/promos",
@@ -50,7 +55,7 @@ const getMenuItems = (role: string) => {
       label: <NavLink to="/users">Users</NavLink>,
     });
 
-    menus.splice(2 , 0, {
+    menus.splice(2, 0, {
       key: "/restaurants",
       icon: <Icon component={foodIcon} />,
       label: <NavLink to="/restaurants">Restaurants</NavLink>,
@@ -144,7 +149,10 @@ const Dashboard = () => {
                   }}
                   placement="bottomRight"
                 >
-                  <Avatar style={{ background: "#fde3cf", color: "#f56a00" }} className="cursor-pointer">
+                  <Avatar
+                    style={{ background: "#fde3cf", color: "#f56a00" }}
+                    className="cursor-pointer"
+                  >
                     U
                   </Avatar>
                 </Dropdown>

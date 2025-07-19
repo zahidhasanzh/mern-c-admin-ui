@@ -8,7 +8,8 @@ import { api } from "./client";
 
 export const AUTH_SERVICE = "/api/auth";
 const CATALOG_SERVICE = "/api/catalog";
-const POROMOS_SERVICE_PREFIX = "/api/order";
+const ORDER_SERVICE = "/api/order";
+
 
 //Auth service
 export const login = (credentials: Credentials) =>
@@ -44,14 +45,18 @@ export const updateProduct = (product: FormData, id: string) => {
   });
 };
 
-// Promos Service
-export const getPromos = (queryParam: string) => api.get(`${POROMOS_SERVICE_PREFIX}/coupons?${queryParam}`);
+//  order service
+export const getPromos = (queryParam: string) => api.get(`${ORDER_SERVICE}/coupons?${queryParam}`);
 
 export const createPromo = (data: PromoPayload) =>
-  api.post(`${POROMOS_SERVICE_PREFIX}/coupons`, data);
+  api.post(`${ORDER_SERVICE}/coupons`, data);
 
 export const updatePromo = (id: string, data: PromoPayload) =>
-  api.put(`${POROMOS_SERVICE_PREFIX}/coupons/${id}`, data);
+  api.put(`${ORDER_SERVICE}/coupons/${id}`, data);
 
 export const deletePromo = (id: string) =>
-  api.delete(`${POROMOS_SERVICE_PREFIX}/coupons/${id}`);
+  api.delete(`${ORDER_SERVICE}/coupons/${id}`);
+
+
+export const getOrders = (queryString: string) => api.get(`${ORDER_SERVICE}/orders?${queryString}`)
+
