@@ -6,6 +6,7 @@ import {
   Flex,
   List,
   Row,
+  Select,
   Space,
   Tag,
   Typography,
@@ -14,10 +15,33 @@ import { RightOutlined } from "@ant-design/icons";
 import { Link, useParams } from "react-router-dom";
 import { capitalizeFirst } from "../products/helpers";
 import { colorMapping } from "../../constants";
-import { useQuery } from "@tanstack/react-query";
-import { getSingle } from "../../http/api";
-import type { Order } from "../../type";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { changeStatus, getSingle } from "../../http/api";
+import type { Order, OrderStatus } from "../../type";
 import { format } from "date-fns";
+
+const orderStatusOption = [
+  {
+    value: "received",
+    label: "Received",
+  },
+  {
+    value: "confirmed",
+    label: "Confirmed",
+  },
+  {
+    value: "prepared",
+    label: "Prepared",
+  },
+  {
+    value: "out_for_delivery",
+    label: "Out For Delivery",
+  },
+  {
+    value: "delivered",
+    label: "Delivered",
+  },
+];
 
 const SingleOrder = () => {
   const params = useParams();
@@ -34,7 +58,24 @@ const SingleOrder = () => {
       return getSingle(orderId as string, queryString).then((res) => res.data);
     },
   });
+
+  const queryClient = useQueryClient()
+  const {mutate} = useMutation({
+    mutationKey: ['order', orderId],
+    mutationFn: async (status: OrderStatus) => {
+      return await changeStatus(orderId as string, {status}).then((res) => res.data)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ['order', orderId]})
+    }
+  })
   if (!order) return null;
+
+
+  const handleStatusChange = (status: OrderStatus) => {
+    console.log('change to status', status);
+    mutate(status)
+  }
 
   return (
     <Space direction="vertical" size={"large"} style={{ width: "100%" }}>
@@ -47,6 +88,18 @@ const SingleOrder = () => {
             { title: `Order #${order?._id}` },
           ]}
         />
+
+        <Space>
+          <Typography.Text>Change Order Status</Typography.Text>
+
+          <Select
+            style={{ width: 150 }}
+           defaultValue={order.orderStatus}
+            allowClear={true}
+            onChange={handleStatusChange}
+            options={orderStatusOption}
+          />
+        </Space>
       </Flex>
 
       <Row gutter={24}>
@@ -141,9 +194,7 @@ const SingleOrder = () => {
               {order.comment && (
                 <Flex style={{ flexDirection: "column" }}>
                   <Typography.Text type="secondary">Comment</Typography.Text>
-                  <Typography.Text>
-                    {order.comment}
-                  </Typography.Text>
+                  <Typography.Text>{order.comment}</Typography.Text>
                 </Flex>
               )}
             </Space>
