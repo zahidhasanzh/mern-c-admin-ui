@@ -2,6 +2,7 @@ import type {
   CreateTenantData,
   CreateUserData,
   Credentials,
+  OrderStatus,
   PromoPayload,
 } from "../type";
 import { api } from "./client";
@@ -60,4 +61,6 @@ export const deletePromo = (id: string) =>
 
 export const getOrders = (queryString: string) => api.get(`${ORDER_SERVICE}/orders?${queryString}`)
 export const getSingle = (orderId: string, queryString: string) => api.get(`${ORDER_SERVICE}/orders/${orderId}?${queryString}`)
+
+export const changeStatus = (orderId: string, data: {status: OrderStatus}) => api.patch(`${ORDER_SERVICE}/orders/change-status/${orderId}`, data)
 
