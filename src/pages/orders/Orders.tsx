@@ -117,6 +117,7 @@ const Orders = () => {
   useEffect(() => {
     if (user?.tenant) {
       socket.on("order-update", (data) => {
+          console.log("received from socket:", data.event_type, data.data);
         //todo: data.event_type =
         if (
           (data.event_type === OrderEvents.ORDER_CREATE &&
