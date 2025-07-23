@@ -118,7 +118,7 @@ const Tenants = () => {
     if (user?.role !== 'admin') {
         return <Navigate to="/" replace={true} />;
     }
-
+    
     return (
         <>
             <Space direction="vertical" size="large" style={{ width: '100%' }}>

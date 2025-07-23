@@ -132,7 +132,6 @@ const Users = () => {
       return;
     },
   });
-  
 
   const { mutate: updateUserMutation } = useMutation({
     mutationKey: ["user"],
@@ -186,8 +185,6 @@ const Users = () => {
     return <Navigate to="/" replace={true}></Navigate>;
   }
 
-
-
   return (
     <>
       <Space direction="vertical" size={"large"} style={{ width: "100%" }}>
@@ -200,13 +197,11 @@ const Users = () => {
             ]}
           />
 
-          {isFetching && (
-            <Spin
-              indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />}
-            />
-          )}
+          {isFetching && <Spin indicator={<LoadingOutlined spin />} />}
           {isError && (
-            <Typography.Text type="danger">{error.message}</Typography.Text>
+            <Typography.Text type="danger">
+              {(error as Error).message}
+            </Typography.Text>
           )}
         </Flex>
 

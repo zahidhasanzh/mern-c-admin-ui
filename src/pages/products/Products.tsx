@@ -295,7 +295,7 @@ const Products = () => {
           />
           {isFetching && (
             <Spin
-              indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />}
+              indicator={<LoadingOutlined  spin />}
             />
           )}
           {isError && (
