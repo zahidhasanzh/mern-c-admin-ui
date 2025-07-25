@@ -91,7 +91,6 @@ const Users = () => {
 
   useEffect(() => {
     if (currentEditingUser) {
-      console.log(currentEditingUser);
       setDrawerOpen(true);
       form.setFieldsValue({
         ...currentEditingUser,
@@ -163,7 +162,6 @@ const Users = () => {
   }, []);
 
   const onFilterChange = (changedFields: FieldData[]) => {
-    console.log(changedFields);
     const changeFilterFields = changedFields
       .map((item) => ({
         [item.name[0]]: item.value,

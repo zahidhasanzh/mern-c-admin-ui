@@ -73,7 +73,6 @@ const SingleOrder = () => {
 
 
   const handleStatusChange = (status: OrderStatus) => {
-    console.log('change to status', status);
     mutate(status)
   }
 

@@ -169,7 +169,6 @@ const Promos = () => {
         page: 1,
       }));
     }
-    console.log("changefield", changeFilterFields);
   };
 
   return (
